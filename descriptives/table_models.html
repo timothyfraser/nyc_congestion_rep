@@ -1,0 +1,295 @@
+<table>
+<caption><b>Linear Models of Air Pollution in New York City Metropolitan Area</b><br><i>Dependent Variable: &radic;PM<sub>2.5</sub> Concentration ug/m<sup>3</sup></i><br>Main Effects and Goodness of Fit Statistics<hr></hr></caption>
+ <thead>
+  <tr>
+   <th style="text-align:left;"> Predictor </th>
+   <th style="text-align:center;"> CBSA<br>Base Model </th>
+   <th style="text-align:center;"> CBSA<br>+Weather </th>
+   <th style="text-align:center;"> CBSA<br>+Demographics </th>
+   <th style="text-align:center;"> NYC<br>Base Model </th>
+   <th style="text-align:center;"> NYC<br>+Weather </th>
+   <th style="text-align:center;"> NYC<br>+Demographics </th>
+   <th style="text-align:center;"> CRZ<br>Base Model </th>
+   <th style="text-align:center;"> CRZ<br>+Weather </th>
+   <th style="text-align:center;"> CRZ<br>+Demographics </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> Daily Treatment Effect </td>
+   <td style="text-align:center;"> <b><0.01</b>***<br>(0.00) </td>
+   <td style="text-align:center;"> <b><0.01</b>***<br>(0.00) </td>
+   <td style="text-align:center;"> <b><0.01</b>***<br>(0.00) </td>
+   <td style="text-align:center;"> <b><0.01</b>***<br>(0.00) </td>
+   <td style="text-align:center;"> <b><0.01</b>*<br>(0.00) </td>
+   <td style="text-align:center;"> <b><0.01</b>*<br>(0.00) </td>
+   <td style="text-align:center;"> <0.01 <br>(0.00) </td>
+   <td style="text-align:center;"> <b><0.01</b>***<br>(0.00) </td>
+   <td style="text-align:center;"> <b><0.01</b>***<br>(0.00) </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Treatment </td>
+   <td style="text-align:center;"> <b>-0.39</b>***<br>(0.02) </td>
+   <td style="text-align:center;"> <b>-0.20</b>***<br>(0.02) </td>
+   <td style="text-align:center;"> <b>-0.20</b>***<br>(0.02) </td>
+   <td style="text-align:center;"> <b>-0.47</b>***<br>(0.03) </td>
+   <td style="text-align:center;"> <b>-0.22</b>***<br>(0.03) </td>
+   <td style="text-align:center;"> <b>-0.22</b>***<br>(0.03) </td>
+   <td style="text-align:center;"> <b>-0.49</b>***<br>(0.05) </td>
+   <td style="text-align:center;"> <b>-0.21</b>***<br>(0.06) </td>
+   <td style="text-align:center;"> <b>-0.19</b>***<br>(0.05) </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> &radic;Background Concentration </td>
+   <td style="text-align:center;"> <b>0.91</b>***<br>(0.01) </td>
+   <td style="text-align:center;"> <b>0.80</b>***<br>(0.01) </td>
+   <td style="text-align:center;"> <b>0.79</b>***<br>(0.01) </td>
+   <td style="text-align:center;"> <b>0.91</b>***<br>(0.01) </td>
+   <td style="text-align:center;"> <b>0.75</b>***<br>(0.01) </td>
+   <td style="text-align:center;"> <b>0.77</b>***<br>(0.01) </td>
+   <td style="text-align:center;"> <b>0.86</b>***<br>(0.02) </td>
+   <td style="text-align:center;"> <b>0.67</b>***<br>(0.02) </td>
+   <td style="text-align:center;"> <b>0.66</b>***<br>(0.02) </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> log(Distance from Nearest Highway) </td>
+   <td style="text-align:center;"> <b>-0.03</b>***<br>(0.00) </td>
+   <td style="text-align:center;"> <b>-0.03</b>***<br>(0.00) </td>
+   <td style="text-align:center;"> <0.01 <br>(0.00) </td>
+   <td style="text-align:center;"> <b>-0.03</b>***<br>(0.00) </td>
+   <td style="text-align:center;"> <b>-0.03</b>***<br>(0.00) </td>
+   <td style="text-align:center;"> <b>-0.02</b>***<br>(0.00) </td>
+   <td style="text-align:center;">  </td>
+   <td style="text-align:center;">  </td>
+   <td style="text-align:center;">  </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> log(Temperature) </td>
+   <td style="text-align:center;">  </td>
+   <td style="text-align:center;"> <b>0.72</b>***<br>(0.03) </td>
+   <td style="text-align:center;"> <b>0.66</b>***<br>(0.03) </td>
+   <td style="text-align:center;">  </td>
+   <td style="text-align:center;"> <b>0.83</b>***<br>(0.04) </td>
+   <td style="text-align:center;"> <b>0.84</b>***<br>(0.04) </td>
+   <td style="text-align:center;">  </td>
+   <td style="text-align:center;"> <b>0.76</b>***<br>(0.08) </td>
+   <td style="text-align:center;"> <b>0.73</b>***<br>(0.07) </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> % Humidity </td>
+   <td style="text-align:center;">  </td>
+   <td style="text-align:center;"> <0.01 <br>(0.00) </td>
+   <td style="text-align:center;"> <b><0.01</b>***<br>(0.00) </td>
+   <td style="text-align:center;">  </td>
+   <td style="text-align:center;"> <b>0.01</b>***<br>(0.00) </td>
+   <td style="text-align:center;"> <b>0.01</b>***<br>(0.00) </td>
+   <td style="text-align:center;">  </td>
+   <td style="text-align:center;"> <b>0.01</b>***<br>(0.00) </td>
+   <td style="text-align:center;"> <b>0.01</b>***<br>(0.00) </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Windspeed m/s </td>
+   <td style="text-align:center;">  </td>
+   <td style="text-align:center;"> <b>-0.02</b>***<br>(0.00) </td>
+   <td style="text-align:center;"> <b>-0.02</b>***<br>(0.00) </td>
+   <td style="text-align:center;">  </td>
+   <td style="text-align:center;"> <b>-0.02</b>***<br>(0.00) </td>
+   <td style="text-align:center;"> <b>-0.02</b>***<br>(0.00) </td>
+   <td style="text-align:center;">  </td>
+   <td style="text-align:center;"> <b>-0.03</b>***<br>(0.01) </td>
+   <td style="text-align:center;"> <b>-0.03</b>***<br>(0.00) </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Precipitation </td>
+   <td style="text-align:center;">  </td>
+   <td style="text-align:center;"> 0.48 <br>(0.40) </td>
+   <td style="text-align:center;"> -0.54 <br>(0.39) </td>
+   <td style="text-align:center;">  </td>
+   <td style="text-align:center;"> -0.80 <br>(0.51) </td>
+   <td style="text-align:center;"> <b>-1.01</b>*<br>(0.51) </td>
+   <td style="text-align:center;">  </td>
+   <td style="text-align:center;"> <b>-3.17</b>**<br>(1.01) </td>
+   <td style="text-align:center;"> <b>-2.92</b>**<br>(0.93) </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> % Cloud Cover </td>
+   <td style="text-align:center;">  </td>
+   <td style="text-align:center;"> <0.01 <br>(0.00) </td>
+   <td style="text-align:center;"> <b><0.01</b>***<br>(0.00) </td>
+   <td style="text-align:center;">  </td>
+   <td style="text-align:center;"> <b><0.01</b>***<br>(0.00) </td>
+   <td style="text-align:center;"> <b><0.01</b>***<br>(0.00) </td>
+   <td style="text-align:center;">  </td>
+   <td style="text-align:center;"> <b><0.01</b>***<br>(0.00) </td>
+   <td style="text-align:center;"> <b><0.01</b>***<br>(0.00) </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> log(Pop. Density) </td>
+   <td style="text-align:center;">  </td>
+   <td style="text-align:center;">  </td>
+   <td style="text-align:center;"> <b>0.07</b>***<br>(0.00) </td>
+   <td style="text-align:center;">  </td>
+   <td style="text-align:center;">  </td>
+   <td style="text-align:center;"> <b>0.07</b>***<br>(0.01) </td>
+   <td style="text-align:center;">  </td>
+   <td style="text-align:center;">  </td>
+   <td style="text-align:center;"> <b>-1.21</b>***<br>(0.06) </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> log(Median Income) </td>
+   <td style="text-align:center;">  </td>
+   <td style="text-align:center;">  </td>
+   <td style="text-align:center;"> <b>-0.09</b>***<br>(0.02) </td>
+   <td style="text-align:center;">  </td>
+   <td style="text-align:center;">  </td>
+   <td style="text-align:center;"> <b>0.13</b>***<br>(0.03) </td>
+   <td style="text-align:center;">  </td>
+   <td style="text-align:center;">  </td>
+   <td style="text-align:center;"> <b>0.10</b>**<br>(0.03) </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> % Non-White </td>
+   <td style="text-align:center;">  </td>
+   <td style="text-align:center;">  </td>
+   <td style="text-align:center;"> -0.03 <br>(0.03) </td>
+   <td style="text-align:center;">  </td>
+   <td style="text-align:center;">  </td>
+   <td style="text-align:center;"> 0.07 <br>(0.05) </td>
+   <td style="text-align:center;">  </td>
+   <td style="text-align:center;">  </td>
+   <td style="text-align:center;">  </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> % Hispanic/Latino </td>
+   <td style="text-align:center;">  </td>
+   <td style="text-align:center;">  </td>
+   <td style="text-align:center;"> <b>-0.36</b>***<br>(0.03) </td>
+   <td style="text-align:center;">  </td>
+   <td style="text-align:center;">  </td>
+   <td style="text-align:center;"> <b>-0.14</b>**<br>(0.04) </td>
+   <td style="text-align:center;">  </td>
+   <td style="text-align:center;">  </td>
+   <td style="text-align:center;">  </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Constant </td>
+   <td style="text-align:center;"> <b>0.74</b>***<br>(0.04) </td>
+   <td style="text-align:center;"> <b>-1.36</b>***<br>(0.12) </td>
+   <td style="text-align:center;"> <b>-0.89</b>**<br>(0.28) </td>
+   <td style="text-align:center;"> <b>0.80</b>***<br>(0.05) </td>
+   <td style="text-align:center;"> <b>-1.76</b>***<br>(0.15) </td>
+   <td style="text-align:center;"> <b>-4.10</b>***<br>(0.39) </td>
+   <td style="text-align:center;"> <b>0.82</b>***<br>(0.08) </td>
+   <td style="text-align:center;"> <b>-1.70</b>***<br>(0.28) </td>
+   <td style="text-align:center;"> <b>10.01</b>***<br>(0.78) </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> R<sup>2</sup> </td>
+   <td style="text-align:center;"> 0.54 </td>
+   <td style="text-align:center;"> 0.56 </td>
+   <td style="text-align:center;"> 0.58 </td>
+   <td style="text-align:center;"> 0.54 </td>
+   <td style="text-align:center;"> 0.57 </td>
+   <td style="text-align:center;"> 0.58 </td>
+   <td style="text-align:center;"> 0.58 </td>
+   <td style="text-align:center;"> 0.62 </td>
+   <td style="text-align:center;"> 0.68 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> RMSE (ug/m<sup>3</sup>) </td>
+   <td style="text-align:center;"> 0.55 </td>
+   <td style="text-align:center;"> 0.54 </td>
+   <td style="text-align:center;"> 0.53 </td>
+   <td style="text-align:center;"> 0.56 </td>
+   <td style="text-align:center;"> 0.54 </td>
+   <td style="text-align:center;"> 0.53 </td>
+   <td style="text-align:center;"> 0.50 </td>
+   <td style="text-align:center;"> 0.48 </td>
+   <td style="text-align:center;"> 0.44 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Mean Avg Error (MAE)  (ug/m<sup>3</sup>) </td>
+   <td style="text-align:center;"> 0.42 </td>
+   <td style="text-align:center;"> 0.41 </td>
+   <td style="text-align:center;"> 0.41 </td>
+   <td style="text-align:center;"> 0.43 </td>
+   <td style="text-align:center;"> 0.42 </td>
+   <td style="text-align:center;"> 0.41 </td>
+   <td style="text-align:center;"> 0.39 </td>
+   <td style="text-align:center;"> 0.37 </td>
+   <td style="text-align:center;"> 0.34 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> %MAE/Range </td>
+   <td style="text-align:center;"> 9% </td>
+   <td style="text-align:center;"> 9% </td>
+   <td style="text-align:center;"> 9% </td>
+   <td style="text-align:center;"> 10% </td>
+   <td style="text-align:center;"> 9% </td>
+   <td style="text-align:center;"> 9% </td>
+   <td style="text-align:center;"> 12% </td>
+   <td style="text-align:center;"> 11% </td>
+   <td style="text-align:center;"> 10% </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Range (ug/m<su>3</sup>) </td>
+   <td style="text-align:center;"> 0.3-5.0 </td>
+   <td style="text-align:center;"> 0.3-5.0 </td>
+   <td style="text-align:center;"> 0.3-5.0 </td>
+   <td style="text-align:center;"> 0.5-5.0 </td>
+   <td style="text-align:center;"> 0.5-5.0 </td>
+   <td style="text-align:center;"> 0.5-5.0 </td>
+   <td style="text-align:center;"> 1.8-5.0 </td>
+   <td style="text-align:center;"> 1.8-5.0 </td>
+   <td style="text-align:center;"> 1.8-5.0 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> F (df) </td>
+   <td style="text-align:center;"> 336.4*** (62) </td>
+   <td style="text-align:center;"> 335.1*** (67) </td>
+   <td style="text-align:center;"> 338.7*** (71) </td>
+   <td style="text-align:center;"> 207.3*** (62) </td>
+   <td style="text-align:center;"> 218.3*** (67) </td>
+   <td style="text-align:center;"> 214.0*** (71) </td>
+   <td style="text-align:center;"> 59.1*** (61) </td>
+   <td style="text-align:center;"> 64.8*** (66) </td>
+   <td style="text-align:center;"> 79.2*** (68) </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Max VIF </td>
+   <td style="text-align:center;"> 6.5 </td>
+   <td style="text-align:center;"> 7.0 </td>
+   <td style="text-align:center;"> 7.0 </td>
+   <td style="text-align:center;"> 6.8 </td>
+   <td style="text-align:center;"> 7.4 </td>
+   <td style="text-align:center;"> 7.4 </td>
+   <td style="text-align:center;"> 7.3 </td>
+   <td style="text-align:center;"> 7.9 </td>
+   <td style="text-align:center;"> 8.0 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> N Obs </td>
+   <td style="text-align:center;"> 17758 </td>
+   <td style="text-align:center;"> 17667 </td>
+   <td style="text-align:center;"> 17667 </td>
+   <td style="text-align:center;"> 11228 </td>
+   <td style="text-align:center;"> 11193 </td>
+   <td style="text-align:center;"> 11193 </td>
+   <td style="text-align:center;"> 2651 </td>
+   <td style="text-align:center;"> 2651 </td>
+   <td style="text-align:center;"> 2651 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> N Treated|N Control </td>
+   <td style="text-align:center;"> 5469|12289 </td>
+   <td style="text-align:center;"> 5412|12255 </td>
+   <td style="text-align:center;"> 5412|12255 </td>
+   <td style="text-align:center;"> 3608|7620 </td>
+   <td style="text-align:center;"> 3589|7604 </td>
+   <td style="text-align:center;"> 3589|7604 </td>
+   <td style="text-align:center;"> 882|1769 </td>
+   <td style="text-align:center;"> 882|1769 </td>
+   <td style="text-align:center;"> 882|1769 </td>
+  </tr>
+</tbody>
+</table>
