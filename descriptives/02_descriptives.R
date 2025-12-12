@@ -8,7 +8,8 @@ library(sf)
 library(ggplot2)
 library(lubridate)
 
-setwd(paste0(rstudioapi::getActiveProject(), "/descriptives"))
+setwd("C:/Users/tmf77/nyc_congestion_pricing/descriptives")
+# setwd(paste0(rstudioapi::getActiveProject(), "/descriptives"))
 source("00_functions.R")
 
 
@@ -202,5 +203,102 @@ if(!file.exists("effects.csv")){
 }
 
 
-rm(list = ls())
+# BENCHMARKS #################################################
+library(dplyr)
+library(readr)
+library(lubridate)
+library(stringr)
+library(gtools)
+setwd("C:/Users/tmf77/nyc_congestion_pricing/descriptives")
+source("00_functions.R")
 
+# read_rds("panel_daily_nyc.rds") %>% with(date) %>% range()
+
+# Repeat the simulation for just the final models, and return results and observed values for each sensor-date pair
+if(!file.exists("../descriptives/qi_by_sensordate.csv")){
+  get_qi_by_sensordate(path_data =  "../descriptives/panel_daily_nyc.rds", start = "2025-01-05", end = "2025-06-01") %>%
+    write_csv("../descriptives/qi_by_sensordate.csv")
+}
+# read_csv("../descriptives/qi_by_sensordate.csv") %>% head()
+
+# What do these variables mean?
+# id - unique id for the sensor-date-pair, purely for simulation purposes
+# sediff - standard error of the difference between the treated and counterfactual predictions
+# diff - mean difference between the treated and counterfactual predictions
+# yhat1 - treated predicted value
+# yhat0 - counterfactual predicted value
+# se1 - standard error of the treated predicted value
+# se0 - standard error of the counterfactual predicted value (what would have happened if the treatment HAD NOT been implemented)
+# percentchg - percentage change in PM2.5 concentration compared to the counterfactual prediction
+# observed - observed value PM2.5 concentration (ug/m3)
+# bgmean - background PM2.5 estimates (eg. non-transportation related)
+
+# CRZ
+att1 = read_csv("../descriptives/qi_by_sensordate.csv") %>% 
+   filter(area == "crz") %>% 
+   get_att()
+
+# NYC
+att2 =read_csv("../descriptives/qi_by_sensordate.csv") %>% 
+   filter(area == "nyc") %>%
+   get_att()
+
+# CBSA
+att3 = read_csv("../descriptives/qi_by_sensordate.csv") %>% 
+   filter(area == "cbsa") %>%
+   get_att()
+
+
+
+# Compilation of most appropriate values from entire area
+stat2 = bind_rows(
+  read_csv("../descriptives/qi_by_sensordate.csv") %>% 
+    filter(model == "M9", area == "crz"),
+  read_csv("../descriptives/qi_by_sensordate.csv") %>% 
+    filter(model == "M6", area == "nyc"),
+  read_csv("../descriptives/qi_by_sensordate.csv") %>% 
+    filter(model == "M3", area == "cbsa")
+)
+
+# Overall estimate for entire NYC metro area, using best model for each relevant area
+att4 = stat2 %>% get_att()
+
+# County-specific estimates for entire NYC metro area, using best model for each given county
+# eg. Bronx, Queens, Kings, Richmond use NYC model, Manhattan uses CRZ model, others use CBSA model
+att5 = stat2 %>%
+   group_by(name) %>%
+   get_att()
+
+# Long Island counties
+att6 = stat2 %>%
+   filter(name %in% c("Kings", "Queens", "Nassau", "Suffolk")) %>%
+   get_att()
+
+# Long Island - just Nassau & Suffolk
+att7 = stat2 %>%
+   filter(name %in% c("Nassau", "Suffolk")) %>%
+   get_att()
+
+# Averaged across all models
+myatt = bind_rows(
+  att1 %>% mutate(area = "CRZ", model = "M9"), 
+  att2 %>% mutate(area = "NYC", model = "M6"), 
+  att3 %>% mutate(area = "CBSA", model = "M3"),
+  att4 %>% mutate(area = "Overall", model = "Combined"),
+  att5 %>% mutate(area = name, model = "Mixed"),
+  att6 %>% mutate(area = "Long Island", model = "Mixed"),
+  att7 %>% mutate(area = "Long Island (Nassau & Suffolk)", model = "M3")
+) %>%
+  select(
+    area, model, att, se_att, stars, yhat1, yhatse1, yhat0, yhatse0, percentchange
+  ) %>%
+  write_csv("../descriptives/att.csv")
+
+
+
+# read_csv("../descriptives/att.csv")
+
+
+
+
+rm(list = ls())

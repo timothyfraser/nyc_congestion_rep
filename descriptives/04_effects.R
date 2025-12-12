@@ -15,77 +15,10 @@ library(sf)
 library(ggtext)
 library(shadowtext)
 library(ggpubr)
-rm(list = ls())
 
-setwd("C:/Users/tmf77/nyc_congestion_pricing/descriptives")
+setwd(paste0(getwd(), "/descriptives"))
+
 # setwd(paste0(rstudioapi::getActiveProject(), "/descriptives"))
-
-# ORIGINAL
-# # Overall effects
-# e = read_csv("effects.csv") %>%
-#   mutate(lower = att - se_att * qnorm(0.975),
-#          upper = att + se_att * qnorm(0.975)) %>%
-#   filter(type == "overall") %>%
-#   mutate(area = stringr::str_remove(model, pattern = "[0-9]{1}")) %>%
-#   mutate(area = area %>% dplyr::recode_factor(
-#     "cbsa" = "<b>New York City Metropolitan Area</b><br>a.k.a. <i>Core-Based Statistical Area</i> (CBSA)",
-#     "nyc" = "<b>New York City 5 Boroughs</b> (NYC)",
-#     "crz" = "<b>Congestion Relief Zone</b> (CRZ)"    
-#   )) %>%
-#   mutate(spec = spec %>% dplyr::recode_factor(
-#     "3" = "+Demographics",
-#     "2" = "+Weather",
-#     "1" = "Basic Model"
-#   )) %>%
-#   mutate(label = paste0(scales::number(att, accuracy = 0.1), stars))
-
-
-# gg = ggplot() +
-#   geom_col(
-#     data = e,
-#     mapping = aes(x = spec, y = att, group = model, fill = att)
-#   ) +
-#   geom_linerange(
-#     data = e,
-#     mapping = aes(x = spec, ymin = lower, ymax = upper, group = model)
-#   ) +
-#   geom_shadowtext(
-#     data = e,
-#     mapping = aes(
-#       x = spec, y = att, label = label, color = att
-#     ), nudge_x = 0.25, nudge_y = -0.1,
-#     bg.r = 0.1, bg.color = "white", fontface = "bold"
-#   ) +
-#   facet_wrap(~area, scales = "free_y", ncol = 1) +
-#   coord_flip() +
-#   labs(y = "<b>Average Treatment Effect on the Treatment Group (ATT)</b><br>Change in PM<sub>2.5</sub></b> in μg/m<sup>3</sup> with 95% Confidence Intervals</i>",
-#        x = "Model") +
-#   theme_bw(base_size = 14) +
-#   theme(
-#     plot.title = element_markdown(size = 16),
-#     plot.subtitle = element_markdown(size = 14),
-#     strip.text = ggtext::element_markdown(size = 12, color = "white"),
-#     legend.box = "vertical",
-#     legend.position = "bottom",
-#     axis.ticks = element_blank(),
-#     panel.grid.major = element_blank(),
-#     legend.title = element_markdown(size = 12),
-#     strip.background = element_rect(fill = "#373737"),
-#     axis.title.x = element_markdown(size = 12)
-#   ) +
-#   guides(color = "none") +
-#   guides(fill = guide_colorsteps(show.limits = TRUE, barwidth = 20, barheight = 1)) +
-#   scale_color_gradient2(low = "#648FFF", high = "#DC267F", mid = "darkgrey", midpoint = 0, limits = c(-4, 4)) +
-#   scale_fill_gradient2(low = "#648FFF", high = "#DC267F", mid = "white", midpoint = 0, limits = c(-4, 4)) +
-#   scale_y_continuous(expand = expansion(c(0.1,0))) +
-#   labs(  fill = "<b>Change in PM<sub>2.5</sub></b><br><i>Δμg/m<sup>3</sup>",
-#          title = "<b>Average Policy Effects on NYC Air Quality</b>",
-#          subtitle = "Jan 6, 2025 - June 1, 2025")
-
-# ggsave(plot = gg, filename = "../descriptives/fig_att.png", dpi = 500, width = 7, height = 8)  
-# browseURL("../descriptives/fig_att.png")
-
-
 
 # Overall effects
 e = read_csv("effects.csv") %>%
@@ -93,20 +26,6 @@ e = read_csv("effects.csv") %>%
          upper = att + se_att * qnorm(0.975)) %>%
   filter(type == "overall") %>%
   mutate(area = stringr::str_remove(model, pattern = "[0-9]{1}")) %>%
-  # Reclassify items into a 9-point model scale
-  mutate(item = case_when(
-    spec == "1" & area == "cbsa" ~ "1",
-    spec == "2" & area == "cbsa" ~ "2",
-    spec == "3" & area == "cbsa" ~ "3",
-
-    spec == "1" & area == "nyc" ~ "4",
-    spec == "2" & area == "nyc" ~ "5",
-    spec == "3" & area == "nyc" ~ "6",
-
-    spec == "1" & area == "crz" ~ "7",    
-    spec == "2" & area == "crz" ~ "8",
-    spec == "3" & area == "crz" ~ "9"
-  )) %>%
   mutate(area = area %>% dplyr::recode_factor(
     "cbsa" = "<b>New York City Metropolitan Area</b><br>a.k.a. <i>Core-Based Statistical Area</i> (CBSA)",
     "nyc" = "<b>New York City 5 Boroughs</b> (NYC)",
@@ -117,45 +36,41 @@ e = read_csv("effects.csv") %>%
     "2" = "+Weather",
     "1" = "Basic Model"
   )) %>%
-  mutate(label = paste0(scales::number(att, accuracy = 0.1), stars))  %>%
-  arrange(item) %>%
-  mutate(item_label   = item %>% dplyr::recode_factor( 
-    "1" = "<b>M1</b><br>Basic Model",
-    "2" = "<b>M2</b><br>+Weather",
-    "3" = "<b>M3</b><br>+Demographics",
+  mutate(label = paste0(scales::number(att, accuracy = 0.1), stars)) %>%
+  mutate(group = case_when(
+    model == "cbsa1" ~ "<b>M1</b><br>Basic Model",
+    model == "cbsa2" ~ "<b>M2</b><br>+Demographics",
+    model == "cbsa3"  ~ "<b>M3</b><br>+Weather",
+    model == "nyc1"  ~ "<b>M4</b><br>Basic Model",
+    model == "nyc2"  ~ "<b>M5</b><br>+Demographics",
+    model == "nyc3"  ~ "<b>M6</b><br>+Weather",
+    model == "crz1"  ~ "<b>M7</b><br>Basic Model",
+    model == "crz2"  ~ "<b>M8</b><br>+Demographics",
+    model == "crz3"  ~ "<b>M9</b><br>+Weather"
+  ))
 
-    "4" = "<b>M4</b><br>Basic Model",
-    "5" = "<b>M5</b><br>+Weather",
-    "6" = "<b>M6</b><br>+Demographics",
-    "7" = "<b>M7</b><br>Basic Model",
-    "8" = "<b>M8</b><br>+Weather",
-    "9" = "<b>M9</b><br>+Demographics"
-  )) 
-
-e %>% select(model, area, spec, item, item_label)
-
-
+e$group
 
 gg = ggplot() +
   geom_col(
     data = e,
-    mapping = aes(x = reorder(item_label, -as.numeric(item)), y = att, group = model, fill = att)
+    mapping = aes(x = reorder(group, as.numeric(spec)), y = att, group = model, fill = att)
   ) +
   geom_linerange(
     data = e,
-    mapping = aes(x = reorder(item_label, -as.numeric(item)), ymin = lower, ymax = upper, group = model)
+    mapping = aes(x = reorder(group, as.numeric(spec)), ymin = lower, ymax = upper, group = model)
   ) +
   geom_shadowtext(
     data = e,
     mapping = aes(
-      x = reorder(item_label, -as.numeric(item)), y = att, label = label, color = att
+      x = reorder(group, as.numeric(spec)), y = att, label = label, color = att
     ), nudge_x = 0.25, nudge_y = -0.1,
     bg.r = 0.1, bg.color = "white", fontface = "bold"
   ) +
   facet_wrap(~area, scales = "free_y", ncol = 1) +
   coord_flip() +
   labs(y = "<b>Average Treatment Effect on the Treatment Group (ATT)</b><br>Change in PM<sub>2.5</sub></b> in μg/m<sup>3</sup> with 95% Confidence Intervals</i>",
-       x = "Model") +
+       x = "Models (M1-M9)") +
   theme_bw(base_size = 14) +
   theme(
     plot.title = element_markdown(size = 16),
@@ -164,24 +79,25 @@ gg = ggplot() +
     legend.box = "vertical",
     legend.position = "bottom",
     axis.ticks = element_blank(),
-    panel.grid.major = element_blank(),
     axis.text.y = element_markdown(size = 12),
+    panel.grid.major = element_blank(),
     legend.title = element_markdown(size = 12),
     strip.background = element_rect(fill = "#373737"),
     axis.title.x = element_markdown(size = 12)
   ) +
   guides(color = "none") +
   guides(fill = guide_colorsteps(show.limits = TRUE, barwidth = 20, barheight = 1)) +
-  scale_color_gradient2(low = "#648FFF", mid = "darkgrey",  limits = c(-4, 0)) +
-  scale_fill_gradient2(low = "#648FFF", mid = "white", limits = c(-4, 0)) +
+  scale_color_gradient(low = "#648FFF", high = "#373737", limits = c(-4, 0)) +
+  scale_fill_gradient(low = "#648FFF", high = "white",  limits = c(-4, 0)) +
   scale_y_continuous(expand = expansion(c(0.1,0))) +
   labs(  fill = "<b>Change in PM<sub>2.5</sub></b><br><i>Δμg/m<sup>3</sup>",
          title = "<b>Average Policy Effects on NYC PM<sub>2.5</sub></b>",
-         subtitle = "Jan 6, 2025 - June 1, 2025",
-         x = "Models (M1-M9)")
+         subtitle = "Jan 6, 2025 - June 1, 2025")
 
-ggsave(plot = gg, filename = "../descriptives/fig_att2.png", dpi = 500, width = 7, height = 8)  
-browseURL("../descriptives/fig_att2.png")
+png("../descriptives/fig_att.png", width = 7, height = 8, units = "in", res = 500)
+print(gg)
+dev.off()  
+browseURL("../descriptives/fig_att.png")
 
 
 ## Weekly Effects #####################################
@@ -277,7 +193,9 @@ gg = ggplot() +
        y = "Weekly Average Treatment Effects on PM<sub>2.5</sub><br>as 95% Confidence Intervals",
        x = "Weeks since Congestion Relief Policy Started")
 
-ggsave(plot = gg, filename = "../descriptives/fig_att_weekly.png", dpi = 500, width = 6, height = 7)
+png("../descriptives/fig_att_weekly.png", width = 6, height = 7, units = "in", res = 500)
+print(gg)
+dev.off()
 browseURL("../descriptives/fig_att_weekly.png")
 
 
@@ -324,7 +242,9 @@ ggcombo = ggarrange(
   plotlist = list(gg, gg2), ncol =2, widths = c(0.4, 0.6), labels = c("A", "B")
 )  
 
-ggsave(ggcombo, filename = "../descriptives/fig_weekly_vehicles.png", dpi = 500, width = 12, height = 6)
+png("../descriptives/fig_weekly_vehicles.png", width = 12, height = 6, units = "in", res = 500)
+print(ggcombo)
+dev.off()
 
 browseURL("../descriptives/fig_weekly_vehicles.png")
 
@@ -416,7 +336,9 @@ gg3 = ggplot() +
     title = "<b>Impacts of Vehicle Entries to Congestion Relief Zone on Air Pollution</b>",
     subtitle = "Janury 6, 2025 to June 1, 2025"
   )
-ggsave(plot = gg3, filename = "fig_att_vehicle_entries.png", dpi = 500, width = 12, height = 6) 
+png("fig_att_vehicle_entries.png", width = 12, height = 6, units = "in", res = 500)
+print(gg3)
+dev.off() 
 browseURL("fig_att_vehicle_entries.png")
 
 
@@ -431,7 +353,9 @@ ggall = ggarrange(
   plotlist = list(ggcombo, gg3), nrow =2, labels = c("", "C")
 )  
 
-ggsave(ggall, filename = "../descriptives/fig_att_vehicle_entries_all.png", dpi = 500, width = 12, height = 12)
+png("../descriptives/fig_att_vehicle_entries_all.png", width = 12, height = 12, units = "in", res = 500)
+print(ggall)
+dev.off()
 
 browseURL("../descriptives/fig_att_vehicle_entries_all.png")
 
