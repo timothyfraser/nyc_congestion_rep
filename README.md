@@ -9,7 +9,8 @@ Replication Code and data for [NYC Congestion Pricing policy evaluation paper]( 
 -   **Collaborators**: Tim Fraser, Gina Park, Danni Lu, Mohammad Tarayani, Haiyan Deng, & Oliver Gao
 -   Institution: Cornell University Systems Engineering / Civil & Environmental Engineering
 
-[![Congestion Relief Zone - Source: [NY Metropolitan Transit Authority](https://congestionreliefzone.mta.info/)](data/images/clipboard-490080029.png)](https://congestionreliefzone.mta.info/)
+![Congestion Relief Zone - Source: [NY Metropolitan Transit Authority](https://congestionreliefzone.mta.info/)](data/images/clipboard-490080029.png)
+[Source: NY Metropolitan Transit Authority](https://congestionreliefzone.mta.info/)
 
 
 ## Table of Contents
