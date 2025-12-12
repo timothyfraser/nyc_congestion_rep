@@ -2,13 +2,12 @@
 
 <a id="readme-top"></a>
 
-# nyc_congestion_pricing
+# nyc_congestion_rep
 
-Code and data for NYC Congestion Pricing policy evaluation paper
+Replication Code and data for [NYC Congestion Pricing policy evaluation paper]( https://doi.org/10.1038/s44407-025-00037-2)
 
--   **Collaborators**: Danni Lu, Gina Park, Tim Fraser, Mohammad Tarayani, Oliver Gao
+-   **Collaborators**: Tim Fraser, Gina Park, Danni Lu, Mohammad Tarayani, Haiyan Deng, & Oliver Gao
 -   Institution: Cornell University Systems Engineering / Civil & Environmental Engineering
--   Link to [Google Doc](https://docs.google.com/document/d/14KsJps6AbbdI31vIzsDlHdSHd7tGW9CLwxueOHy--wY/edit?usp=sharing)
 
 [![Congestion Relief Zone - Source: [NY Metropolitan Transit Authority](https://congestionreliefzone.mta.info/)](data/images/clipboard-490080029.png)](https://congestionreliefzone.mta.info/)
 
