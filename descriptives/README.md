@@ -5,8 +5,8 @@ This folder contains scripts and outputs for descriptive analysis and visualizat
 ## Table of Contents
 
 - [Key Output Files](#key-output-files)
-  - [`att.csv`](#attcsv-⭐-quick-summary) ⭐ **QUICK SUMMARY**
-  - [`qi_by_sensordate.csv`](#qi_by_sensordatecsv-⭐-primary-data-source) ⭐ **PRIMARY DATA SOURCE**
+  - [`att.csv`](#attcsv-⭐-overall-statistics) ⭐ **QUICK SUMMARY**
+  - [`qi_by_sensordate.csv`](#qi_by_sensordatecsv-⭐-site-statistics)
   - [`effects.csv`](#effectscsv)
   - [`panel_daily_nyc.rds`](#panel_daily_nycrds)
   - [`models.rds`](#modelsrds)
@@ -35,7 +35,7 @@ This folder contains scripts and outputs for descriptive analysis and visualizat
 
 ## Key Output Files
 
-### `att.csv` ⭐ **QUICK SUMMARY**
+### `att.csv` ⭐ **OVERALL STATISTICS**
 
 **Simplest summary file** - Contains the key findings in one place: Average Treatment Effects (ATT) for each geographic area plus an overall combined estimate. **Start here for quick answers.**
 
@@ -58,6 +58,7 @@ This folder contains scripts and outputs for descriptive analysis and visualizat
 - `yhatse1`: Standard error of yhat1 (μg/m³)
 - `yhat0`: Average Predicted PM2.5 WITHOUT policy - counterfactual (μg/m³)
 - `yhatse0`: Standard error of yhat0 (μg/m³)
+- `percentchange`: Percent Change with Policy compared to without Policy (`1 - yhat1/yhat0`)
 
 **Use this file when**:
 - You need a quick summary of the main findings
@@ -67,7 +68,7 @@ This folder contains scripts and outputs for descriptive analysis and visualizat
 
 **📖 For detailed usage guide, see the [Journalist Guide](../docs/journalist_guide.md#-quick-summary-attcsv)**
 
-### `qi_by_sensordate.csv` ⭐ **PRIMARY DATA SOURCE**
+### `qi_by_sensordate.csv` ⭐ **SITE STATISTICS**
 
 **Main data file** containing sensor-date level observations with treatment effects, predictions, and observed values. This is the most granular and complete dataset for analysis.
 
@@ -87,8 +88,6 @@ This folder contains scripts and outputs for descriptive analysis and visualizat
 - `percentchg`: Percentage change in PM2.5 compared to counterfactual
 - `yhat1`: Predicted PM2.5 with treatment (μg/m³)
 - `yhat0`: Predicted PM2.5 without treatment - counterfactual (μg/m³)
-- `observed`: Actual observed PM2.5 concentration (μg/m³)
-- `bgmean`: Background PM2.5 (non-transportation related) (μg/m³)
 - `sediff`, `se1`, `se0`: Standard errors for uncertainty quantification
 - `model`: Model identifier (M3, M6, or M9)
 - `aqs_id_full`: Sensor identifier
@@ -231,9 +230,6 @@ Visualizes changes over time:
 - Calculates percent changes in treatment effects over time
 - Compares changes across different metrics
 
-#### `07_synth.R`
-Placeholder/minimal script (currently contains only a data read statement).
-
 #### `08_media.R`
 Script for media coverage inquiries:
 - Identifies specific monitoring sites (e.g., Mott Haven, Hunts Point)
@@ -300,4 +296,5 @@ Typical execution order:
 - **[Journalist Guide](../docs/journalist_guide.md)** - Comprehensive guide for using all data files with code examples, common queries, and interpretation guidance
 - [Main README](../README.md) - Project overview
 - [Data README](../data/README.md) - Raw data documentation
+
 
