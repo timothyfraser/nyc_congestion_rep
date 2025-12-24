@@ -161,7 +161,7 @@ read_rds("panel_daily_nyc.rds") %>%
     mu = mean(value, na.rm = TRUE),
     max = max(value, na.rm = TRUE)
   )
-  
+
 read_rds("panel_daily_nyc.rds") %>%
   filter((date >= "2024-01-05" & date <= "2024-06-01") | 
            (date >= "2025-01-05" & date <= "2025-06-01") ) %>%
@@ -184,8 +184,39 @@ stat = read_rds("models.rds")[c(9)] %>%
   select(model, yhat1, yhat0, att, percent)
 
 
+# EXTRA ###########################################
+# Mott Hill and Hunts Point
 
+library(dplyr)
+library(readr)
+library(sf)
+library(stringr)
 
+setwd("C:/Users/tmf77/nyc_congestion_pricing/descriptives")
+source("00_functions.R")
+
+pois = c("840999999997", "840999999992")
+
+read_rds("panel_daily_nyc.rds") %>%
+  filter((date >= "2024-01-05" & date <= "2024-06-01") | 
+           (date >= "2025-01-05" & date <= "2025-06-01") ) %>%
+  filter(aqs_id_full %in% pois) %>%
+  mutate(year = lubridate::year(date)) %>%
+  group_by(aqs_id_full,area, year) %>%
+  summarize(
+    min = min(value, na.rm = TRUE),
+    mu = median(value, na.rm = TRUE),
+    max = max(value, na.rm = TRUE),
+    upper = quantile(value, na.rm = TRUE, probs = 0.90)
+  ) %>%
+  ungroup() %>%
+  mutate(aqi = pm25_aqi(max))
+
+read_csv("effects.csv") %>% 
+   filter(type == "per_sensor", model == "nyc3") %>%
+   filter(aqs_id_full %in% mysites$aqs_id_full) %>%
+   left_join(by = "aqs_id_full", y = mysites %>% select(aqs_id_full, site_name)) %>%
+   select(aqs_id_full, site_name, att, se_att)
 
 
 
