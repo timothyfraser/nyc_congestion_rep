@@ -10,6 +10,8 @@ library(lubridate)
 
 setwd("C:/Users/tmf77/nyc_congestion_pricing/descriptives")
 # setwd(paste0(rstudioapi::getActiveProject(), "/descriptives"))
+setwd("C:/Users/tmf77/nyc_congestion_pricing/descriptives")
+# setwd(paste0(rstudioapi::getActiveProject(), "/descriptives"))
 source("00_functions.R")
 
 

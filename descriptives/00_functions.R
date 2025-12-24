@@ -8,6 +8,13 @@
 #' @param digits integer: Number of decimal places for rounding (default: 0)
 #' @return numeric: Air Quality Index value (0-500 scale)
 #' @author Tim Fraser
+#' @name pm25_aqi
+#' @title Convert PM2.5 Concentration to Air Quality Index
+#' @description Converts PM2.5 concentration values (in μg/m³) to Air Quality Index (AQI) values using the EPA's standard conversion formula. The function uses linear interpolation between AQI breakpoints.
+#' @param pm25 numeric: PM2.5 concentration in micrograms per cubic meter (μg/m³)
+#' @param digits integer: Number of decimal places for rounding (default: 0)
+#' @return numeric: Air Quality Index value (0-500 scale)
+#' @author Tim Fraser
 pm25_aqi <- function(pm25, digits = 0) {
   library(dplyr)
 
@@ -37,6 +44,12 @@ pm25_aqi <- function(pm25, digits = 0) {
 #' @param data data.frame or matrix: Input data containing numeric variables for correlation calculation
 #' @return tibble: Data frame with columns `from`, `to`, and `cor` containing pairwise correlations
 #' @author Tim Fraser
+#' @name cor_tidy
+#' @title Create Tidy Correlation Matrix
+#' @description Converts a correlation matrix into a tidy long-format data frame with pairwise correlations. Removes the lower triangle and diagonal elements to avoid redundancy.
+#' @param data data.frame or matrix: Input data containing numeric variables for correlation calculation
+#' @return tibble: Data frame with columns `from`, `to`, and `cor` containing pairwise correlations
+#' @author Tim Fraser
 cor_tidy = function(data){
   data %>%
     cor(use = "pairwise.complete.obs") %>%
@@ -51,6 +64,12 @@ cor_tidy = function(data){
     filter(from != to)
 }
 
+#' @name tidier
+#' @title Tidy Model Output with Significance Stars
+#' @description Formats model output using broom::tidy() and adds significance stars based on p-values. Renames standard error and p-value columns for consistency.
+#' @param m model object: Fitted model object (typically from lm() or similar) that can be processed by broom::tidy()
+#' @return tibble: Tidy data frame with model coefficients, standard errors, p-values, and significance stars
+#' @author Tim Fraser
 #' @name tidier
 #' @title Tidy Model Output with Significance Stars
 #' @description Formats model output using broom::tidy() and adds significance stars based on p-values. Renames standard error and p-value columns for consistency.
@@ -72,6 +91,13 @@ tidier = function(m){
 #' @param m model object: Fitted linear model object (from lm() or similar)
 #' @return tibble: Data frame with columns `term` (variable name) and `vif` (VIF value)
 #' @author Tim Fraser
+
+#' @name get_vif
+#' @title Calculate Variance Inflation Factors
+#' @description Calculates Variance Inflation Factors (VIF) for all terms in a regression model to detect multicollinearity. Handles both simple VIF vectors and generalized VIF matrices.
+#' @param m model object: Fitted linear model object (from lm() or similar)
+#' @return tibble: Data frame with columns `term` (variable name) and `vif` (VIF value)
+#' @author Tim Fraser
 get_vif = function(m){
   myvif = car::vif(m)
   if(is.matrix(myvif)){
@@ -79,7 +105,14 @@ get_vif = function(m){
   }else{ tibble(term = names(myvif), vif = myvif) }
   
 }
+}
 
+#' @name get_gof
+#' @title Extract Goodness-of-Fit Statistics
+#' @description Extracts comprehensive goodness-of-fit statistics from a model including R-squared, RMSE, MAE, VIF, and observed value ranges. Calculates metrics in original units (back-transformed from square root scale if applicable).
+#' @param m model object: Fitted linear model object (from lm() or similar)
+#' @return tibble: Data frame containing goodness-of-fit statistics including rsq, sigma, statistic, p.value, df, nobs, vifmax, ymin, ymax, range, rmse, mae, maevsrange, tr (treated count), ct (control count)
+#' @author Tim Fraser
 #' @name get_gof
 #' @title Extract Goodness-of-Fit Statistics
 #' @description Extracts comprehensive goodness-of-fit statistics from a model including R-squared, RMSE, MAE, VIF, and observed value ranges. Calculates metrics in original units (back-transformed from square root scale if applicable).
@@ -124,6 +157,12 @@ get_gof = function(m){
 #' @param sig_html character: String containing HTML significance symbols (***, **, *, ., or empty)
 #' @return character: LaTeX-formatted significance symbols in math mode
 #' @author Tim Fraser
+#' @name sig_html_to_latex
+#' @title Convert HTML Significance Symbols to LaTeX
+#' @description Helper function that converts HTML-formatted significance symbols (***, **, *, .) to LaTeX math mode format for use in LaTeX documents.
+#' @param sig_html character: String containing HTML significance symbols (***, **, *, ., or empty)
+#' @return character: LaTeX-formatted significance symbols in math mode
+#' @author Tim Fraser
 sig_html_to_latex <- function(sig_html) {
   sig_html %>%
     str_replace_all("\\*\\*\\*", "\\$^{***}\\$") %>%
@@ -132,6 +171,12 @@ sig_html_to_latex <- function(sig_html) {
     str_replace_all("\\.", "\\$^{\\cdot}\\$")
 }
 
+#' @name get_latex
+#' @title Convert HTML Table Rows to LaTeX Format
+#' @description Converts HTML table rows (<tr> elements) containing table cells (<td>) to LaTeX table row format. Extracts coefficients, standard errors, and significance stars, formatting them for LaTeX makecell environment.
+#' @param tr_rows character vector: Vector of HTML table row strings containing <td> elements
+#' @return character: LaTeX-formatted table rows ready for use in LaTeX tables
+#' @author Tim Fraser
 #' @name get_latex
 #' @title Convert HTML Table Rows to LaTeX Format
 #' @description Converts HTML table rows (<tr> elements) containing table cells (<td>) to LaTeX table row format. Extracts coefficients, standard errors, and significance stars, formatting them for LaTeX makecell environment.
@@ -180,6 +225,13 @@ get_latex <- function(tr_rows) {
   paste(latex_rows, collapse = "\n")
 }
 
+#' @name get_table
+#' @title Create Formatted HTML Table from Model Results
+#' @description Creates a formatted HTML table from a list of model objects, including coefficients with standard errors, significance stars, and goodness-of-fit statistics. Can generate either coefficient tables or fixed effects tables.
+#' @param modellist list: Named list of fitted model objects (typically from get_many_models())
+#' @param fe logical: If TRUE, returns fixed effects table (week and day-of-week coefficients). If FALSE (default), returns coefficient and goodness-of-fit table.
+#' @return tibble: Wide-format data frame with model names as columns and terms/statistics as rows, formatted for HTML display
+#' @author Tim Fraser
 #' @name get_table
 #' @title Create Formatted HTML Table from Model Results
 #' @description Creates a formatted HTML table from a list of model objects, including coefficients with standard errors, significance stars, and goodness-of-fit statistics. Can generate either coefficient tables or fixed effects tables.
@@ -373,6 +425,12 @@ get_lines = function(data){
 #' @param data data.frame: Panel dataset containing all necessary variables for modeling (value, treated, bgmean, distmin, temp, humidity, windspeed, precip, cloudcover, pop_density, median_income, nonwhite, hisplat, name, within, week, day)
 #' @return list: Named list containing 9 fitted model objects: cbsa1-3, nyc1-3, crz1-3
 #' @author Tim Fraser
+#' @name get_many_models
+#' @title Fit Multiple Regression Models
+#' @description Fits 9 regression models across three geographic scopes (CBSA, NYC, CRZ) and three specification levels (basic, +weather, +demographics). Models use square root transformation of the outcome variable.
+#' @param data data.frame: Panel dataset containing all necessary variables for modeling (value, treated, bgmean, distmin, temp, humidity, windspeed, precip, cloudcover, pop_density, median_income, nonwhite, hisplat, name, within, week, day)
+#' @return list: Named list containing 9 fitted model objects: cbsa1-3, nyc1-3, crz1-3
+#' @author Tim Fraser
 get_many_models = function(data){
   # testing data
   # data = read_rds("../descriptives/panel_daily_nyc.rds")
@@ -553,6 +611,10 @@ get_simeffects = function(grid, start = "2025-01-05", end = "2025-06-01", n = 10
       # Make a new standard errors for each of the mean sims
       se1 = sd(ysim1),
       se0 = sd(ysim0)
+      yhat0 = mean(ysim0),
+      # Make a new standard errors for each of the mean sims
+      se1 = sd(ysim1),
+      se0 = sd(ysim0)
     ) %>%
     # Join back in key traits
     left_join(
@@ -564,6 +626,14 @@ get_simeffects = function(grid, start = "2025-01-05", end = "2025-06-01", n = 10
   
 }
 
+#' @name get_effects
+#' @title Calculate Treatment Effects
+#' @description Calculates treatment effects as the difference between treated and counterfactual predictions, along with standard errors. Filters to the treatment period and computes difference and standard error of difference.
+#' @param grid tibble: Data frame containing yhat0, se0, yhat1, se1 columns (typically from get_yhat())
+#' @param start character: Start date of treatment period in "YYYY-MM-DD" format (default: "2025-01-05")
+#' @param end character: End date of treatment period in "YYYY-MM-DD" format (default: "2025-06-01")
+#' @return tibble: Data frame containing treatment effects with columns diff (difference), sediff (standard error), yhat1, yhat0, plus date, aqs_id_full, and other identifying columns
+#' @author Tim Fraser
 #' @name get_effects
 #' @title Calculate Treatment Effects
 #' @description Calculates treatment effects as the difference between treated and counterfactual predictions, along with standard errors. Filters to the treatment period and computes difference and standard error of difference.
@@ -586,6 +656,115 @@ get_effects = function(grid, start = "2025-01-05", end = "2025-06-01"){
   
 }
 
+
+
+
+#' @name get_pooled_sd
+#' @title Pool Standard Deviations
+#' @description 
+#' Pools standard deviations.
+#' If the sample sizes are equal, we can pool the standard deviations by averaging the variances,
+#' @param sds:[dbl] vector: Vector of standard deviations
+#' @param ns:[int] vector: Vector of sample sizes
+#' @return numeric: Pooled standard deviation
+#' @author Tim Fraser
+get_pooled_sd = function(sds, ns){
+  # Testing values
+  # sds = c(0.5, 0.7, 0.3, 0.4)
+  # ns = c(10000, 10000, 10000, 10000)
+  
+  # Do they have equal sample sizes?
+  equal_sample_size = all(ns == ns[1])
+  
+
+  # The standard deviation of a sampling distribution is the standard error.
+
+  
+  # IF it has equal sample sizes ...
+  if(equal_sample_size){
+    # So, we can pool the standard deviations by averaging the variances,
+    # and then taking the square root.
+    # If equal sample sizes....
+    varp = sum(sds^2) / length(ns)
+    sdp = sqrt(varp)
+    return(sdp)
+  }else if(!equal_sample_size){
+    # If sample sizes are not equal, we need to weight the variances by the sample sizes.
+    varp = sum(sds^2 * (ns - 1)) / (sum(ns) - length(ns))
+    sdp = sqrt(varp)
+    return(sdp)
+  }
+}
+
+
+# Let's just computationally handle this...
+
+#' @name get_pooled_se_mc
+#' @title Pool Standard Errors with Monte Carlo Simulation
+#' @description 
+#' Pools standard errors with Monte Carlo simulation.
+#' A computational solution to the problem of pooling standard errors
+#' when sample sizes are different.
+#' @param ses:[dbl] vector: Vector of standard errors
+#' @param ns:[int] vector: Vector of sample sizes
+#' @return numeric: Pooled standard error
+#' @author Tim Fraser
+get_pooled_se_mc = function(ses, ns){
+  # Testing values
+  # ses = c(0.5, 0.7, 0.3, 0.4)
+  # ns = c(3000, 2000, 2000, 500)
+  
+  output = tibble(id = 1:length(ses), ses = ses, ns = ns) %>%
+    group_by(id) %>%
+    # For each standard error, recreate the sampling distribution at the size of the sample of interest
+    reframe(
+      sim = rnorm(n = ns, mean = 0, sd = ses)
+    ) %>%
+    # The total distribution will be the full distribution of errors.
+    # The pooled standard error is really trying to capture the average variation in this total distribution,
+    # up or down weighting by sample size to make sure we don't give too little / too much weight to any on group.
+    summarize(sd = sd(sim))
+    # The standard deviation of a sampling distribution is a standard error.
+    # Therefore, this is the pooled standard error, achieved with monte carlo simulation.
+
+    # This technique hinges more on the shape of each simulated distribution than the typical strategy of averaging variances.
+    return(output)
+} 
+
+
+#' @name get_pooled_se
+#' @title Pool Standard Errors using Variances
+#' @description Pools standard errors using variances and sample sizes.
+#' This is the standard strategy for pooling standard errors.
+#' @param ses:[dbl] vector: Vector of standard errors
+#' @param ns:[int] vector: Vector of sample sizes
+#' @return numeric: Pooled standard error
+#' @author Tim Fraser
+get_pooled_se = function(ses, ns){
+#  Convert standard errors to variances, average them, and then take the square root
+
+  # ses = c(0.5, 0.7, 0.3, 0.4)
+  # ns = c(3000, 2000, 2000, 500)
+  vars = ses*ns
+  varp = sum(vars*ns-1)/(sum(ns) - length(ns))
+  sep = sqrt(varp / sum(ns) )
+
+  return(sep)
+}
+
+# This strategy is essentially the same as the pooled standard deviation.
+# But it generally makes sense, looking at the input vector of standard errors.
+# get_pooled_se_mc(ses = c(0.5, 0.7, 0.3, 0.4), ns = c(3000, 2000, 2000, 500))
+# get_pooled_sd(sds = c(0.5, 0.7, 0.3, 0.4), ns = c(3000, 2000, 2000, 500))
+# get_pooled_se(ses = c(0.5, 0.7, 0.3, 0.4), ns = c(3000, 2000, 2000, 500))
+
+
+#' @name get_att
+#' @title Compute Average Treatment Effect on the Treated
+#' @description Calculates the Average Treatment Effect on the Treated (ATT) by averaging individual treatment effects. Computes standard error, t-statistic, degrees of freedom, p-value, and significance stars.
+#' @param effects tibble: Data frame containing treatment effects with columns diff (difference) and sediff (standard error of difference), typically from get_effects() or get_simeffects()
+#' @return tibble: Single-row data frame containing ATT statistics: yhat1, yhat0, att (average treatment effect), se_att (standard error), t (t-statistic), df (degrees of freedom), p_value, stars (significance indicators)
+#' @author Tim Fraser
 
 
 
@@ -756,6 +935,7 @@ get_att = function(effects){
 
       # Average of the differences
       att = mean(diff),
+      # pool standard errors of the differences estimates
       # pool standard errors of the differences estimates
       se_att = sqrt(  sum(sediff^2) ) / n(),
       t = att / se_att,
