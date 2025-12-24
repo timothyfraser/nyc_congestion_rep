@@ -8,7 +8,8 @@ library(sf)
 library(ggplot2)
 library(lubridate)
 
-setwd(paste0(rstudioapi::getActiveProject(), "/descriptives"))
+setwd("C:/Users/tmf77/nyc_congestion_pricing/descriptives")
+# setwd(paste0(rstudioapi::getActiveProject(), "/descriptives"))
 source("00_functions.R")
 
 
@@ -202,5 +203,77 @@ if(!file.exists("effects.csv")){
 }
 
 
-rm(list = ls())
+# BENCHMARKS #################################################
+library(dplyr)
+library(readr)
+library(lubridate)
+library(stringr)
+library(gtools)
+setwd("C:/Users/tmf77/nyc_congestion_pricing/descriptives")
+source("00_functions.R")
 
+# First, we're going to calculate the treatment effects as done in the original study.
+path_att = report_att(path_att = "../descriptives/att.csv", 
+  start = "2025-01-05", end = "2025-06-01", useobs = FALSE, impute = FALSE,
+  path_qi = "../descriptives/qi_by_sensordate.csv", path_data =  "../descriptives/panel_daily_nyc.rds")
+read_csv(path_att, show_col_types = FALSE) %>% 
+   filter(area %in% c("CRZ", "NYC", "CBSA"))
+
+# What if we use the basic controls models?
+unlink("../descriptives/qi_by_sensordate_impute.csv")
+path_att_basic = report_att(path_att = "../descriptives/att_controls_basic.csv", 
+  start = "2025-01-05", end = "2025-06-01", useobs = FALSE, impute = FALSE, controls = FALSE,
+  path_qi = "../descriptives/qi_by_sensordate_controls_basic.csv", path_data =  "../descriptives/panel_daily_nyc.rds")
+read_csv(path_att_basic, show_col_types = FALSE) %>% 
+   filter(area %in% c("CRZ", "NYC", "CBSA"))
+
+# What if we imputed missing covariates like cloudcover, based on other known weather, but didn't use observed values?
+unlink("../descriptives/qi_by_sensordate_impute.csv")
+path_att_impute = report_att(path_att = "../descriptives/att_impute.csv", 
+  start = "2025-01-05", end = "2025-06-01", useobs = FALSE, impute = TRUE,
+  path_qi = "../descriptives/qi_by_sensordate_impute.csv", path_data =  "../descriptives/panel_daily_nyc.rds")
+read_csv(path_att_impute, show_col_types = FALSE) %>% glimpse()
+
+
+# Next, we're going to do some robustness tests, calculating the treatment effects using observed values for the treated group.
+unlink("../descriptives/qi_by_sensordate_obs.csv")
+path_att_obs = report_att(path_att = "../descriptives/att_obs.csv", 
+  start = "2025-01-05", end = "2025-06-01", useobs = TRUE, impute = FALSE,
+  path_qi = "../descriptives/qi_by_sensordate_obs.csv", path_data =  "../descriptives/panel_daily_nyc.rds")
+
+
+# Finally, calculate using observed values for the treated group, and imputed missing covariates.
+# Most robust - avoids losing any 
+unlink("../descriptives/qi_by_sensordate_obs_impute.csv")
+path_att_obs_impute = report_att(path_att = "../descriptives/att_obs_impute.csv", 
+  start = "2025-01-05", end = "2025-06-01", useobs = TRUE, impute = TRUE,
+  path_qi = "../descriptives/qi_by_sensordate_obs_impute.csv", path_data =  "../descriptives/panel_daily_nyc.rds")
+read_csv(path_att_obs_impute, show_col_types = FALSE) %>% glimpse()
+
+
+# SENSITIVITY TEST #################################################
+# Next, we're going to do a little sensitivity test,
+# evaluating how the treatment effects change when we change the time period of the treatment.
+
+path_qi = "../descriptives/qi_by_sensordate_obs_impute.csv"
+result1 = get_att_by_time(path_qi = path_qi, start = rep("2025-01-05", 5), end = lubridate::make_date(year = 2025, month = 2:6, day = 1))
+
+# result2 = get_att_by_time(path_qi = path_qi, start = c("2025-01-05", lubridate::make_date(year = 2025, month = 2:5, day = 1)) %>% as.character(), end = lubridate::make_date(year = 2025, month = 2:6, day = 1))
+
+# How did the average treatment effects change over time?
+# Cumulative effect of the treatment
+result1 %>% 
+   filter(area == "CRZ")
+result1 %>% 
+   filter(area == "NYC")
+result1 %>% 
+   filter(area == "CBSA")
+result1 %>% 
+   filter(area == "Overall")
+
+result1 %>% 
+   filter(area == "Bronx")
+
+
+
+rm(list = ls())
