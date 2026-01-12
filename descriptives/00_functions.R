@@ -105,7 +105,6 @@ get_vif = function(m){
   }else{ tibble(term = names(myvif), vif = myvif) }
   
 }
-}
 
 #' @name get_gof
 #' @title Extract Goodness-of-Fit Statistics
@@ -567,14 +566,21 @@ get_yhat = function(m, path_data = "../descriptives/panel_daily_nyc.rds", useobs
   # In each case, you use predicted values for the counterfactual.
   if(useobs == TRUE){
 
+    # Extract the outcome variable name (pre-transformation) from the model object
+
+    # Extract value from sqrt(value) and value_max from sqrt(value_max)
+    yvar = names(m$model)[1] %>%
+       stringr::str_remove_all(pattern = c("(sqrt[(]|[)])"))
+   
     grid = grid %>%
        # If the observed value is available, use it instead of the predicted value. 
        # (Remember to square root the observed value so its on the same scale as the predicted values)
-       mutate(yhat1 = if_else(!is.na(value), true = sqrt(value), false = yhat1),
+       mutate(yhat1 = if_else(!is.na(!!sym(yvar)), true = sqrt(!!sym(yvar)), false = yhat1),
        # If the observed value is available, set the standard error to 0
-              se1 = if_else(!is.na(value), true = 0, false = se1))
+              se1 = if_else(!is.na(!!sym(yvar)), true = 0, false = se1))
 
   }
+
 
 
   return(grid)
@@ -607,10 +613,6 @@ get_simeffects = function(grid, start = "2025-01-05", end = "2025-06-01", n = 10
       sediff = sd(diff),
       diff = mean(diff),
       yhat1 = mean(ysim1),
-      yhat0 = mean(ysim0),
-      # Make a new standard errors for each of the mean sims
-      se1 = sd(ysim1),
-      se0 = sd(ysim0)
       yhat0 = mean(ysim0),
       # Make a new standard errors for each of the mean sims
       se1 = sd(ysim1),

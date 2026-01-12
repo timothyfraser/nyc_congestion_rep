@@ -10,7 +10,8 @@ library(sf)
 library(ggplot2)
 library(lubridate)
 
-setwd(paste0(rstudioapi::getActiveProject(), "/descriptives"))
+# setwd(paste0(rstudioapi::getActiveProject(), "/descriptives"))
+setwd("C:/Users/tmf77/nyc_congestion_rep/descriptives")
 source("00_functions.R")
 
 # CREATE DATASET ##########################################
@@ -48,7 +49,7 @@ sites = read_rds("../data/sites.rds")
 # Eg. Passaic, Morris, Hunterdon, Middlesex
 
 ## DISTANCES ######################################
-if(!file.exists("distances.csv")){
+if(!file.exists("../descriptives/distances.csv")){
   #sites = read_rds("../data/sites.rds") %>% st_transform(crs = 4326)
   highways = read_rds("../data/highways.rds") %>% st_transform(crs = 4326) %>%
     select(linearid, geometry) %>%
@@ -76,7 +77,7 @@ if(!file.exists("distances.csv")){
           distmed = median(dist, na.rm = TRUE)
         ), .id = "aqs_id_full"
     ) %>% 
-    write_csv("distances.csv")
+    write_csv("../descriptives/distances.csv")
 }
 
 ## PANEL #####################################
@@ -105,7 +106,7 @@ read_csv("../data/datetimes.csv") %>%
   tidyr::expand_grid(
     aqs_id_full = sites %>% filter(!name %in% "Beyond") %>% with(aqs_id_full)
   ) %>%
-  write_csv("grid.csv")
+  write_csv("../descriptives/grid.csv")
 
 
 # Get max daily AQI
@@ -121,7 +122,15 @@ aqi = read_csv("../data/air_quality.csv", show_col_types = FALSE) %>%
   filter(value < quantile(value, prob = 0.995)) %>%
   filter(value > quantile(value, prob = 0.005)) %>%
   group_by(aqs_id_full, treated, date) %>%
-  summarize(value = max(value, na.rm = TRUE), .groups = "drop")
+  summarize(
+    # Calculate max daily concentration (main dependent variable)
+    value_max = max(value, na.rm = TRUE), 
+    # Calculate average daily concentration (used for robustness checks)
+    value_avg = mean(value, na.rm = TRUE), 
+    .groups = "drop") %>%
+    # For consistency, rename value to value_max
+  rename(value = value_max)
+
 
 data = read_csv("grid.csv") %>%
   left_join(by = c("date", "treated", "aqs_id_full"), y = aqi) %>%
@@ -202,7 +211,7 @@ data = read_csv("grid.csv") %>%
   left_join(by = c("aqs_id_full"), y = read_csv("distances.csv", show_col_types = FALSE))
 
 
-# Join in background concentration levels
+# Join in background concentration levels -- for max daily concentration
 data = data %>% 
   left_join(
     by = c("date"), 
@@ -212,6 +221,18 @@ data = data %>%
       group_by(date) %>%
       summarize(bgmean = mean(value, na.rm = TRUE),
                 bgsd = sd(value, na.rm = TRUE), .groups = "drop"))
+
+# Join in background concentration levels -- for average daily concentration
+data = data %>% 
+  left_join(
+    by = c("date"), 
+    y = data %>%
+      filter(name %in% c('Hunterdon', "Middlesex", "Morris", "Passaic")) %>%
+      select(name, date, value_avg) %>%
+      group_by(date) %>%
+      summarize(bgmean_avg = mean(value_avg, na.rm = TRUE),
+                bgsd_avg = sd(value_avg, na.rm = TRUE), .groups = "drop"))
+
 
 # Join in 
 data = data %>% 

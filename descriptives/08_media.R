@@ -246,5 +246,30 @@ read_csv("descriptives/att.csv")  %>%
 
 
 
-# COMPARE MULTIPLE METHODS ########################################
+# TRUCKING CHANGE #########################################################
+# show vehicle time trend
+library(dplyr)
+library(readr)
+library(lubridate)
+library(tidyr)
+data = read_rds("data/zone_vehicle_entries.rds") %>%
+  select(datetime = toll_10min_block, vehicle_class, detection_group, detection_region, time_period, crz_entries) %>%
+  mutate(week = lubridate::floor_date(datetime, unit = 'weeks')) %>%
+  group_by(week, vehicle_class) %>%
+  summarize(crz_entries = sum(crz_entries, na.rm = TRUE), .groups = "drop")
+
+data %>% 
+   filter(vehicle_class == "3 - Multi-Unit Trucks") %>%
+   slice(c(1, n())) %>%
+   mutate(type = c("start", "end")) %>%
+   tidyr::pivot_wider(id_cols = vehicle_class, names_from = type, values_from = crz_entries) %>%
+   mutate(percent_change = 100 * (end - start) / start)
+
+
+data %>% 
+   filter(vehicle_class == "2 - Single-Unit Trucks") %>%
+   slice(c(1, n())) %>%
+   mutate(type = c("start", "end")) %>%
+   tidyr::pivot_wider(id_cols = vehicle_class, names_from = type, values_from = crz_entries) %>%
+   mutate(percent_change = 100 * (end - start) / start)
 
